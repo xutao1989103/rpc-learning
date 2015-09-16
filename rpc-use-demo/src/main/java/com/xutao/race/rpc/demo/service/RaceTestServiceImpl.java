@@ -42,4 +42,6 @@ public class RaceTestServiceImpl implements RaceTestService {
     public Integer throwException() throws RaceException {
         throw new RaceException("just a exception");
     }
+
+
 }

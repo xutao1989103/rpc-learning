@@ -3,6 +3,9 @@ package com.xutao.race.rpc.demo.builder;
 import com.xutao.race.rpc.api.RpcProvider;
 import com.xutao.race.rpc.demo.service.RaceTestService;
 import com.xutao.race.rpc.demo.service.RaceTestServiceImpl;
+import com.xutao.race.rpc.handler.server.ServiceEngine;
+import com.xutao.race.rpc.model.RpcRequest;
+import com.xutao.race.rpc.model.RpcResponse;
 
 /**
  * Created by xtao on 15-9-16.
@@ -11,6 +14,20 @@ public class ProviderBuilder {
 
     public static void buildProvider(){
         publish();
+        callTest();
+    }
+
+    private static void callTest(){
+        ServiceEngine serviceEngine = ServiceEngine.instance();
+        RpcRequest request = new RpcRequest();
+        request.interfaces = RaceTestService.class;
+        request.version = "1.0.0.api";
+        request.methodName = "getString";
+        request.params = new Class[0];
+        request.args = new Object[0];
+        RpcResponse response = serviceEngine .call(request);
+        System.out.println(response.getAppResponse());
+        System.out.println(response.getErrorMsg());
     }
 
     private static void publish() {

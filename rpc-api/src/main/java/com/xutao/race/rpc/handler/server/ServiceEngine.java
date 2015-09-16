@@ -1,0 +1,69 @@
+package com.xutao.race.rpc.handler.server;
+
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
+import com.xutao.race.rpc.model.RpcRequest;
+import com.xutao.race.rpc.model.RpcResponse;
+import org.springframework.util.StringUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+/**
+ * Created by xtao on 15-9-16.
+ */
+public class ServiceEngine {
+    private static final ServiceEngine SERVICE_ENGINE = new ServiceEngine();
+
+    private ServiceEngine(){
+        table = HashBasedTable.create();
+    }
+
+    public static ServiceEngine instance() {
+        return SERVICE_ENGINE;
+    }
+
+    private Table<String, String, Object> table;
+
+    public RpcResponse call(RpcRequest request) {
+        RpcResponse response = new RpcResponse();
+        Object obj = getObjFromTable(request);
+        try {
+            Method method = obj.getClass().getDeclaredMethod(request.methodName,request.params);
+            Object result = method.invoke(obj,request.args);
+            response.setAppResponse(result);
+        } catch (Exception e) {
+            response.setErrorMsg(e.getMessage());
+            return response;
+        }
+        return response;
+    }
+
+    private Object getObjFromTable(RpcRequest request){
+        Object obj = table.get(request.interfaces.getName(),request.version);
+        if(obj != null){
+            return obj;
+        }else {
+            throw new RuntimeException("cannot find impl of "+request.interfaces.getName() + " " + request.version);
+        }
+    }
+
+    public void publish(Class interfaceDefiner, String version, Object impl){
+        try {
+            validate(interfaceDefiner, version, impl);
+            table.put(interfaceDefiner.getName(),version,impl);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void validate(Class interfaceDefiner, String version, Object impl){
+        if(interfaceDefiner == null)
+            throw new RuntimeException("interface cannot null");
+        if(StringUtils.isEmpty(version))
+            throw new RuntimeException("version cannot empty");
+        if(impl == null)
+            throw new RuntimeException("impl cannot null");
+        return;
+    }
+
+}
