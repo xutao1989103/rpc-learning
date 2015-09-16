@@ -9,7 +9,26 @@ public class RpcResponse implements Serializable {
 
     private static final long serialVersionUID = 8717323226728102092L;
 
-    public String errorMsg;
+    private String errorMsg;
 
-    public Object appResponse;
+    private Object appResponse;
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public Object getAppResponse() {
+        return appResponse;
+    }
+
+    public void setAppResponse(Object appResponse) {
+        this.appResponse = appResponse;
+    }
+    public boolean isError(){
+        return errorMsg == null ? false:true;
+    }
 }

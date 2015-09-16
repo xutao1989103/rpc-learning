@@ -51,7 +51,7 @@ public class RpcConsumer implements InvocationHandler {
 
     }
 
-    public void canselAsyn(String methodName){
+    public void cancelAsyn(String methodName){
 
     }
 
