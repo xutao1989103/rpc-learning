@@ -5,6 +5,8 @@ import com.google.common.collect.Table;
 import com.xutao.race.rpc.context.RpcContext;
 import com.xutao.race.rpc.model.RpcRequest;
 import com.xutao.race.rpc.model.RpcResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,18 +16,11 @@ import java.util.Map;
 /**
  * Created by xtao on 15-9-16.
  */
+
+@Component
+@Qualifier("serviceEngine")
 public class ServiceEngine {
-    private static final ServiceEngine SERVICE_ENGINE = new ServiceEngine();
-
-    private ServiceEngine(){
-        table = HashBasedTable.create();
-    }
-
-    public static ServiceEngine instance() {
-        return SERVICE_ENGINE;
-    }
-
-    private Table<String, String, Object> table;
+    private Table<String, String, Object> table = HashBasedTable.create();
 
     public RpcResponse call(RpcRequest request) {
         RpcResponse response = new RpcResponse();

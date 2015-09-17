@@ -3,9 +3,13 @@ package com.xutao.race.rpc.demo.builder;
 import com.xutao.race.rpc.api.RpcProvider;
 import com.xutao.race.rpc.demo.service.RaceTestService;
 import com.xutao.race.rpc.demo.service.RaceTestServiceImpl;
+import com.xutao.race.rpc.handler.server.ServiceConfig;
 import com.xutao.race.rpc.handler.server.ServiceEngine;
 import com.xutao.race.rpc.model.RpcRequest;
 import com.xutao.race.rpc.model.RpcResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 /**
  * Created by xtao on 15-9-16.
@@ -18,7 +22,8 @@ public class ProviderBuilder {
     }
 
     private static void callTest(){
-        ServiceEngine serviceEngine = ServiceEngine.instance();
+        ApplicationContext context = new AnnotationConfigApplicationContext(ServiceConfig.class);
+        ServiceEngine serviceEngine = (ServiceEngine)context.getBean("serviceEngine");
         RpcRequest request = new RpcRequest();
         request.interfaces = RaceTestService.class;
         request.version = "1.0.0.api";
@@ -51,6 +56,12 @@ public class ProviderBuilder {
                 .timeout(3000)
                 .serializeType("java")
                 .publish();
+
+//        try {
+//            Thread.sleep(Integer.MAX_VALUE);
+//        }catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private static Class<?> getProviderImplClass(){
