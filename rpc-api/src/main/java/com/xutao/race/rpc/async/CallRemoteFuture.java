@@ -2,15 +2,17 @@ package com.xutao.race.rpc.async;
 
 import com.xutao.race.rpc.aop.ConsumerHook;
 import com.xutao.race.rpc.model.RpcRequest;
+import com.xutao.race.rpc.model.RpcResponse;
+import io.netty.channel.Channel;
 
-import java.nio.channels.Channel;
+
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by xtao on 15-9-16.
  */
-public class CallRemoteFuture<RpcResponse> implements Future<RpcResponse> {
+public class CallRemoteFuture implements Future {
 
     private final CountDownLatch latch = new CountDownLatch(1);
     private volatile boolean isDone = false;
@@ -23,8 +25,7 @@ public class CallRemoteFuture<RpcResponse> implements Future<RpcResponse> {
 
 
 
-    @Override
-    public boolean cancel(boolean mayInterruptIfRunning) {
+    public boolean cancel(Throwable cause) {
         if(isProcessed.getAndSet(true)){
             return false;
         }
@@ -34,6 +35,11 @@ public class CallRemoteFuture<RpcResponse> implements Future<RpcResponse> {
         }
         latch.countDown();
         return true;
+    }
+
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return false;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.xutao.race.rpc.api.impl;
 
+import com.google.common.collect.Maps;
 import com.xutao.race.rpc.aop.ConsumerHook;
 import com.xutao.race.rpc.api.RpcConsumer;
 import com.xutao.race.rpc.async.ResponseCallbackListener;
@@ -25,7 +26,8 @@ public class RpcConsumerImpl extends RpcConsumer {
 
     public RpcConsumerImpl(){
         super();
-
+        asynCallBack = Maps.newHashMap();
+        asynMap = Maps.newHashMap();
     }
 
     @Override
